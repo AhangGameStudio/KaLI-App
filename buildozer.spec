@@ -208,3 +208,7 @@ p4a_bootstrap = sdl2
 
 # (str) The entry point of the application
 #entrypoint = main.py
+
+# (str) python-for-android command line arguments
+p4a.local_recipes = .recipes
+p4a.args = --ignore-setup-py

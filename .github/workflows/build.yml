@@ -47,10 +47,12 @@ jobs:
             libtool \
             pkg-config \
             zip \
-            unzip
+            unzip \
+            liblzma-dev \
+            uuid-dev
           
           # 安装 Buildozer 和 Cython
-          pip install --upgrade buildozer cython virtualenv
+          pip install --upgrade buildozer cython==0.29.36 virtualenv
 
       # 3. 修复权限问题 (有时候 Actions 会遇到)
       - name: Fix permissions

@@ -233,40 +233,109 @@ class MatrixKaliApp:
             
         use_wsl = self.wsl_var.get()
         
+        # Check if running on Windows and adjust command
+        is_windows = os.name == 'nt'
+        if is_windows and 'sudo' in cmd:
+            # Remove sudo on Windows
+            cmd = cmd.replace('sudo ', '')
+            self.log_output(f"> ADJUSTING COMMAND FOR WINDOWS: {cmd}")
+        
         self.log_output(f"> INITIALIZING {cmd}...")
         
         def execute():
             try:
-                final_cmd = cmd
-                if use_wsl:
+                if use_wsl and is_windows:
+                    # Check if WSL is available
+                    self.log_output("> CHECKING WSL STATUS...")
+                    
+                    # Use binary mode to avoid encoding issues
+                    wsl_check = subprocess.run('wsl --status', shell=True, capture_output=True)
+                    
+                    if wsl_check.returncode != 0:
+                        self.log_output("> WSL NOT AVAILABLE")
+                        self.log_output("> TO INSTALL WSL, RUN: wsl --install")
+                        self.log_output("> THEN RESTART YOUR COMPUTER")
+                        self.log_output("> SEQUENCE COMPLETE.")
+                        return
+                    
+                    # Check if WSL distribution is installed
+                    wsl_list = subprocess.run('wsl --list', shell=True, capture_output=True)
+                    
+                    # Convert to string with safe decoding
+                    wsl_list_output = ''
+                    try:
+                        if wsl_list.stdout:
+                            wsl_list_output = wsl_list.stdout.decode('utf-8', errors='ignore')
+                    except:
+                        pass
+                    
+                    # Check if any distribution is found
+                    has_distribution = False
+                    if wsl_list_output:
+                        if "Ubuntu" in wsl_list_output or " kali" in wsl_list_output.lower():
+                            has_distribution = True
+                    else:
+                        # If we can't decode, assume WSL is available
+                        has_distribution = True
+                    
+                    if not has_distribution:
+                        self.log_output("> NO WSL DISTRIBUTION FOUND")
+                        self.log_output("> RUN: wsl --install Ubuntu")
+                        self.log_output("> OR: wsl --install kali-linux")
+                        self.log_output("> SEQUENCE COMPLETE.")
+                        return
+                    
+                    # WSL is available, proceed
                     final_cmd = f"wsl {cmd}"
+                    self.log_output(f"> EXECUTING VIA WSL: {final_cmd}")
+                else:
+                    final_cmd = cmd
                 
-                # Using shell=True for windows to run wsl command
-                process = subprocess.Popen(final_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
+                # Use binary mode for better control
+                process = subprocess.Popen(final_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                stdout, _ = process.communicate()
                 
-                # Real-time output with encoding handling
-                for line in iter(process.stdout.readline, b''):
-                    if line:
-                        try:
-                            # Try UTF-8 first
-                            decoded_line = line.decode('utf-8').strip()
-                        except UnicodeDecodeError:
-                            try:
-                                # Try GBK if UTF-8 fails
-                                decoded_line = line.decode('gbk').strip()
-                            except UnicodeDecodeError:
-                                # Fallback to ignore errors
-                                decoded_line = line.decode('utf-8', errors='ignore').strip()
+                if stdout:
+                    # Convert to string with strict filtering
+                    # Only keep ASCII printable characters
+                    filtered_output = []
+                    for byte in stdout:
+                        if 32 <= byte <= 126 or byte in (10, 13, 9):  # Printable ASCII + newlines + tab
+                            filtered_output.append(chr(byte))
+                    
+                    filtered_str = ''.join(filtered_output)
+                    
+                    if filtered_str.strip():
+                        # Split into lines and clean
+                        lines = filtered_str.split('\n')
+                        cleaned_lines = [line.strip() for line in lines if line.strip()]
                         
-                        if decoded_line:
-                            self.log_output(decoded_line)
+                        if cleaned_lines:
+                            for line in cleaned_lines:
+                                if line:  # Only non-empty lines
+                                    self.log_output(line)
+                        else:
+                            self.log_output("> NO VALID OUTPUT")
+                    else:
+                        self.log_output("> NO PRINTABLE OUTPUT")
+                else:
+                    self.log_output("> NO OUTPUT")
                 
-                process.stdout.close()
-                process.wait()
+                self.log_output(f"> COMMAND EXITED WITH CODE: {process.returncode}")
+                
+                if process.returncode != 0:
+                    if use_wsl and is_windows:
+                        self.log_output("> WSL COMMAND FAILED")
+                        self.log_output("> CHECK IF WSL IS RUNNING PROPERLY")
+                        self.log_output("> TRY: wsl --shutdown")
+                        self.log_output("> THEN: wsl")
                 
                 self.log_output("> SEQUENCE COMPLETE.")
+                
             except Exception as e:
                 self.log_output(f"> SYSTEM FAILURE: {str(e)}")
+                import traceback
+                self.log_output(f"> DEBUG INFO: {traceback.format_exc()}")
 
         threading.Thread(target=execute, daemon=True).start()
 
