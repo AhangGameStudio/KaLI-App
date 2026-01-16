@@ -146,13 +146,13 @@ android.enable_androidx = True
 #android.add_activities = com.example.ExampleActivity
 
 # (str) Python source code to contain the main.py, using the .py extension
-#source.main = main.py
+source.main = mobile_app.py
 
 # (list) List of service to declare
 #services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
 
 # (str) The entry point of the application
-#entrypoint = main.py
+entrypoint = mobile_app.py
 
 # (list) List of inclusions using pattern matching
 #include_patterns = assets/*,images/*.png
