@@ -212,6 +212,15 @@ class MatrixKaliApp:
         self.desc_text.config(state="normal")
         self.desc_text.delete("1.0", tk.END)
         self.desc_text.insert("1.0", f"TARGET: {tool_name}\n\nPROTOCOL: {tool_cmd}\n\nDATA: {desc}")
+        
+        # Add special note for Wifite
+        if tool_name == "Wifite":
+            self.desc_text.insert(tk.END, "\n\n{NOTICE} Wifite requires:")
+            self.desc_text.insert(tk.END, "\n- Linux environment (WSL recommended)")
+            self.desc_text.insert(tk.END, "\n- Root/sudo privileges")
+            self.desc_text.insert(tk.END, "\n- Wireless network adapter in monitor mode")
+            self.desc_text.insert(tk.END, "\n- Dependencies: aircrack-ng, reaver, etc.")
+        
         self.desc_text.config(state="disabled")
         
         self.cmd_entry.delete(0, tk.END)
