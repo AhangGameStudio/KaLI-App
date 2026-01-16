@@ -195,7 +195,7 @@ android.enable_androidx = True
 #p4a_dist_dir =
 
 # (list) List of p4a dists to use
-#p4a_bootstrap = sdl2
+p4a_bootstrap = sdl2
 
 # (int) Port number for the web server
 #port = 8080
