@@ -6,10 +6,12 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle
 from kivy.utils import get_color_from_hex, platform
 from kivy.core.clipboard import Clipboard
 from kivy.uix.popup import Popup
+from kivy.properties import StringProperty
 import random
 import os
 from data import KALI_TOOLS
@@ -405,7 +407,7 @@ class VulnerabilityMiningScreen(Screen):
         path_label = MatrixLabel(text="应用路径:", font_size='18sp', size_hint=(1, 0.4))
         path_frame.add_widget(path_label)
         
-        self.path_input = kivy.uix.textinput.TextInput(
+        self.path_input = TextInput(
             text='.', 
             size_hint=(1, 0.6),
             background_color=(0, 0, 0, 1),
@@ -668,7 +670,7 @@ class ToolDetailScreen(Screen):
 
 class SecurityScreen(Screen):
     # Define status_var as a class property
-    status_var = kivy.properties.StringProperty("INITIALIZING")
+    status_var = StringProperty("INITIALIZING")
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
