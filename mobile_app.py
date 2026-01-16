@@ -2,13 +2,10 @@ import kivy
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
-from kivy.core.window import Window
-from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 from kivy.utils import get_color_from_hex, platform
 from kivy.core.clipboard import Clipboard
@@ -18,7 +15,7 @@ import os
 from data import KALI_TOOLS
 
 # 配置 Kivy
-kivy.require('2.0.0')
+kivy.require('2.1.0')
 
 # 颜色定义
 COLOR_BG = "#000000"
