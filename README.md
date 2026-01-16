@@ -75,3 +75,16 @@ buildozer android debug
 - `mobile_app.py`: 移动版主程序 (Kivy)
 - `data.py`: 工具数据库 (中文版)
 - `buildozer.spec`: Android 打包配置文件
+
+## 常见问题 (Troubleshooting)
+
+### 1. 依赖安装失败 (libgstreamer/libunwind 错误)
+如果在安装依赖时遇到 `libgstreamer1.0-dev : depends: libunwind-dev` 或 `E: 无法纠正问题` 错误，请尝试以下命令修复：
+
+```bash
+sudo apt-get update
+sudo apt-get --fix-broken install
+sudo apt-get install aptitude
+sudo aptitude install libgstreamer1.0-dev
+```
+当 `aptitude` 询问解决方案时，选择接受能够降级/修复依赖的方案（通常是第二个选项）。
