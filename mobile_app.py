@@ -13,8 +13,46 @@ from kivy.uix.popup import Popup
 import random
 import os
 from data import KALI_TOOLS
-from core.network import network_security
-from core.wireless import scanner, cracker
+
+# 平台特定导入
+if platform != 'android':
+    from core.network import network_security
+    from core.wireless import scanner, cracker
+else:
+    # 在 Android 平台上使用模拟实现
+    class MockNetworkSecurity:
+        def initialize(self):
+            pass
+        def start_monitoring(self):
+            pass
+        def stop_monitoring(self):
+            pass
+        def get_security_status(self):
+            return {
+                'status': 'normal',
+                'network': {
+                    'packet_count': 0,
+                    'flow_count': 0,
+                    'active_flows': 0
+                },
+                'security': {
+                    'blocked_ip_list': []
+                }
+            }
+    
+    class MockWifiScanner:
+        def get_interface_info(self):
+            return []
+        def scan(self, interface):
+            return []
+    
+    class MockWifiCracker:
+        def crack(self, network, interface):
+            return {'success': False, 'error': 'Not supported on Android'}
+    
+    network_security = MockNetworkSecurity()
+    scanner = type('MockScannerModule', (), {'WifiScanner': lambda: MockWifiScanner()})()
+    cracker = type('MockCrackerModule', (), {'WifiCracker': lambda: MockWifiCracker()})()
 
 # 配置 Kivy
 kivy.require('2.1.0')
@@ -414,8 +452,27 @@ class VulnerabilityMiningScreen(Screen):
         self.layout.add_widget(bottom_frame)
         
         # 初始化
-        from core.security import VulnerabilityMiner
-        self.vuln_miner = VulnerabilityMiner()
+        if platform != 'android':
+            from core.security import VulnerabilityMiner
+            self.vuln_miner = VulnerabilityMiner()
+        else:
+            # 在 Android 平台上使用模拟实现
+            class MockVulnerabilityMiner:
+                def analyze_app(self, app_path):
+                    return {
+                        'summary': {
+                            'total': 0,
+                            'critical': 0,
+                            'high': 0,
+                            'medium': 0,
+                            'low': 0
+                        },
+                        'vulnerabilities': []
+                    }
+                def generate_report(self, results):
+                    return 'Vulnerability analysis not supported on Android'
+            
+            self.vuln_miner = MockVulnerabilityMiner()
         self.analysis_results = None
     
     def start_analysis(self, instance):
