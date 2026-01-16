@@ -37,7 +37,7 @@ KALI_TOOLS = {
     "无线攻击 (Wireless Attacks)": [
         {"name": "Aircrack-ng", "cmd": "aircrack-ng", "desc": "一套完整的 WiFi 安全评估工具 (802.11 WEP/WPA-PSK 破解)。"},
         {"name": "Kismet", "cmd": "kismet", "desc": "无线网络探测器、嗅探器和入侵检测系统。"},
-        {"name": "Wifite", "cmd": "python tools/wifite2/Wifite.py", "desc": "自动化的无线攻击工具，支持 WEP/WPA/WPS。基于 GitHub 项目。"},
+        {"name": "Wifite", "cmd": "sudo python tools/wifite2/Wifite.py", "desc": "自动化的无线攻击工具，支持 WEP/WPA/WPS。基于 GitHub 项目，需要在 Linux 环境中以 root 权限运行。"},
         {"name": "Reaver", "cmd": "reaver", "desc": "针对 Wifi Protected Setup (WPS) 的暴力破解工具。"},
         {"name": "Fern Wifi Cracker", "cmd": "fern-wifi-cracker", "desc": "图形化的无线安全审计工具。"}
     ],

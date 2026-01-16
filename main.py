@@ -233,12 +233,24 @@ class MatrixKaliApp:
                     final_cmd = f"wsl {cmd}"
                 
                 # Using shell=True for windows to run wsl command
-                process = subprocess.Popen(final_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
+                process = subprocess.Popen(final_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
                 
-                # Real-time output
-                for line in iter(process.stdout.readline, ''):
+                # Real-time output with encoding handling
+                for line in iter(process.stdout.readline, b''):
                     if line:
-                        self.log_output(line.strip())
+                        try:
+                            # Try UTF-8 first
+                            decoded_line = line.decode('utf-8').strip()
+                        except UnicodeDecodeError:
+                            try:
+                                # Try GBK if UTF-8 fails
+                                decoded_line = line.decode('gbk').strip()
+                            except UnicodeDecodeError:
+                                # Fallback to ignore errors
+                                decoded_line = line.decode('utf-8', errors='ignore').strip()
+                        
+                        if decoded_line:
+                            self.log_output(decoded_line)
                 
                 process.stdout.close()
                 process.wait()
