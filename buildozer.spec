@@ -9,6 +9,16 @@ package.name = kalimatrix
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.test
 
+# (str) Application versioning (method 1)
+# version = 1.0.0
+
+# (str) Application versioning (method 2)
+# version.regex = __version__ = ['"](.*)['"]
+# version.filename = %(source.dir)s/main.py
+
+# (str) Application versioning (method 3)
+version = 1.0.0
+
 # (str) Source code where the main.py live
 source.dir = .
 
