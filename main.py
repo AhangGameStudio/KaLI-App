@@ -233,13 +233,15 @@ class MatrixKaliApp:
                     final_cmd = f"wsl {cmd}"
                 
                 # Using shell=True for windows to run wsl command
-                process = subprocess.Popen(final_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                stdout, stderr = process.communicate()
+                process = subprocess.Popen(final_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
                 
-                if stdout:
-                    self.log_output(stdout)
-                if stderr:
-                    self.log_output(f"ERROR/WARNING:\n{stderr}")
+                # Real-time output
+                for line in iter(process.stdout.readline, ''):
+                    if line:
+                        self.log_output(line.strip())
+                
+                process.stdout.close()
+                process.wait()
                 
                 self.log_output("> SEQUENCE COMPLETE.")
             except Exception as e:
