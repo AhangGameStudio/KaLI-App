@@ -43,7 +43,7 @@ class MatrixKaliApp:
     def __init__(self, root):
         self.root = root
         self.root.title("KALI LINUX MATRIX LAUNCHER")
-        self.root.geometry("1000x700")
+        self.root.geometry("1100x700")
         self.root.configure(bg=COLOR_BG)
         
         # Style configuration
@@ -118,13 +118,13 @@ class MatrixKaliApp:
         self.tool_tree.bind("<<TreeviewSelect>>", self.on_tool_select)
 
         # Right: Details & Action
-        right_frame = tk.Frame(main_frame, bg=COLOR_BG, width=300)
+        right_frame = tk.Frame(main_frame, bg=COLOR_BG, width=350)
         right_frame.pack(side="right", fill="y", padx=(5, 0))
         
         tk.Label(right_frame, text="[ INTEL ]", bg=COLOR_BG, fg=COLOR_FG, font=FONT_HEADER).pack(fill="x", pady=5)
         
         self.desc_text = tk.Text(right_frame, bg=COLOR_BG, fg=COLOR_FG, font=FONT_MAIN, 
-                                 height=15, width=30, wrap="word", bd=1, relief="solid")
+                                 height=10, width=30, wrap="word", bd=1, relief="solid")
         self.desc_text.pack(fill="x", pady=5)
         self.desc_text.insert("1.0", "Select a tool to analyze...")
         self.desc_text.config(state="disabled")
@@ -143,9 +143,13 @@ class MatrixKaliApp:
         self.run_btn = MatrixButton(right_frame, text="INITIATE SEQUENCE", command=self.run_tool)
         self.run_btn.pack(fill="x", pady=5)
         
+        # Enhanced Output Panel
+        tk.Label(right_frame, text="[ SYSTEM OUTPUT ]", bg=COLOR_BG, fg=COLOR_FG, font=FONT_HEADER).pack(fill="x", pady=(10, 5))
+        
         self.output_text = tk.Text(right_frame, bg=COLOR_BG, fg=COLOR_FG, font=FONT_MAIN,
-                                   height=10, width=30, bd=1, relief="solid")
+                                   height=15, width=30, bd=2, relief="ridge", highlightbackground=COLOR_HL, highlightthickness=2)
         self.output_text.pack(fill="both", expand=True, pady=5)
+        self.output_text.insert("1.0", "SYSTEM READY. SELECT A TOOL AND INITIATE SEQUENCE.\n\n")
 
     def setup_footer(self):
         footer = tk.Label(self.root, text="CONNECTED TO MAINFRAME // SECURE CONNECTION", 
